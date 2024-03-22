@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dividir Texto e Salvar em Arquivos</title>
+</head>
+<body>
+
+<textarea id="inputText" rows="10" cols="50"></textarea><br>
+<button onclick="splitAndDownload()">Dividir e Baixar</button>
+
+<script>
+function splitAndDownload() {
+    var inputText = document.getElementById("inputText").value;
+    var maxLength = 2500;
+
+    // Dividir o texto em partes de no máximo 2500 caracteres
+    var textParts = [];
+    var currentPart = "";
+    var words = inputText.split(/\s+/); // Quebra o texto em palavras
+    for (var i = 0; i < words.length; i++) {
+        var word = words[i];
+        if ((currentPart + word).length <= maxLength) {
+            currentPart += word + " ";
+        } else {
+            textParts.push(currentPart.trim()); // Remove o espaço extra no final
+            currentPart = word + " ";
+        }
+    }
+    if (currentPart.trim() !== "") {
+        textParts.push(currentPart.trim());
+    }
+
+    // Criar e baixar arquivos para cada parte
+    for (var j = 0; j < textParts.length; j++) {
+        var blob = new Blob([textParts[j]], { type: "text/plain" });
+        var fileName = "parte_" + (j + 1) + ".txt";
+        var link = document.createElement("a");
+        link.download = fileName;
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
+    }
+}
+</script>
+
+</body>
+</html>
+
